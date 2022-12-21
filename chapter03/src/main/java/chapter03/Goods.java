@@ -9,53 +9,69 @@ public class Goods {
 	private int price;
 	private int countStock;
 	private int countSold;
-	
-	//static변수 클래스변수
+
+	// static변수 클래스변수
 	public static int countOfGoods = 0;
-	
-	//ctrl+space+enter : 기본생성자 생성
+
+	// ctrl+space+enter : 기본생성자 생성
 	public Goods() {
 		// 생성할 때마다 countOfGoods + 1 됨
 		// Goods.countOfGoods = Goods.countOfGoods+1;
-		countOfGoods = countOfGoods+1;
+		countOfGoods = countOfGoods + 1;
 	}
-	
-	public int calcDiscountPrice(float discountRate) {			
-		return (int) (price*discountRate);
+
+	// 생성자 오버로딩
+	public Goods(String name, int price, int countStock, int countSold) {
+		this.name = name;
+		this.price = price;
+		this.countStock = countStock;
+		this.countSold = countSold;
+		
+		countOfGoods = countOfGoods + 1;
 	}
-	
+
+	public int calcDiscountPrice(float discountRate) {
+		return (int) (price * discountRate);
+	}
+
 	public void printInfo() {
-		System.out.println(name+" : "+price+" : "+countStock+" : "+countSold);
+		System.out.println(name + " : " + price + " : " + countStock + " : " + countSold);
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public int getPrice() {
 		return price;
 	}
+
 	public void setPrice(int price) {
-		//메서드에 잘못된 값이 들어왔을때 보호 가능.
-		if(price < 0) {
-			price  = 0;
+		// 메서드에 잘못된 값이 들어왔을때 보호 가능.
+		if (price < 0) {
+			price = 0;
 		}
 		this.price = price;
 	}
+
 	public int getCountStock() {
 		return countStock;
 	}
+
 	public void setCountStock(int countStock) {
 		this.countStock = countStock;
 	}
+
 	public int getCountSold() {
 		return countSold;
 	}
+
 	public void setCountSold(int countSold) {
 		this.countSold = countSold;
 	}
-	
-	
-	
+
 }

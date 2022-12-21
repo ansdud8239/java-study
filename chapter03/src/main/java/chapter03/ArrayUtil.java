@@ -30,7 +30,5 @@ public class ArrayUtil {
 			result[i] = is2[i-is.length];
 		}
 		return result;
-	}
-
-	
+	}	
 }

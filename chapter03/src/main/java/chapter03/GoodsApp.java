@@ -18,6 +18,10 @@ public class GoodsApp {
 		
 		camera.setPrice(4000000);
 		System.out.println(camera.calcDiscountPrice((float) 0.5));
+		
+		// TV
+		Goods tv = new Goods("TV", 400000, 10, 20);
+		tv.printInfo();
 	}
 
 }
