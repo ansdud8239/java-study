@@ -1,3 +1,4 @@
+package chapter03;
 import mypackage.Goods2;
 
 // 상속 관계

@@ -1,0 +1,25 @@
+ip : 192.168.10.x
+서브넷 : 255.255.255.0
+게이트웨이 : 192.168.10.254
+DNS : 8.8.8.8
+vm설치
+centos7 	CentOS-7-x86_64-Minimal-2009.iso
+네트워크 어댑터
+어댑터에 브리지(내부 같은 공유기)
+
+네트워크 확인
+방화벽 확인 -> 방화벽 내림
+
+1. ip할당
+vi /etc/sysconfug/network-scripts/ifcfg-enp0s3
+
+2.  yum설치
+yum update
+net-tools -> ifconfig
+bind-utils
+wget
+
+3.자바 설치 
+>wget https://download.oracle.com/java/17/archive/jdk-17.0.5_linux-x64_bin.tar.gz
+압축풀기
+> tar -zxvf [파일명.tar.gz]
