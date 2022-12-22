@@ -12,5 +12,15 @@ public abstract class Bird {
 	}
 	
 	public abstract void fly();
-	//sing();
+	public abstract void sing();
+	
+	@Override
+	public String toString() {
+		if(this instanceof Duck) {
+			return "오리의 이름은 "+name+"입니다.";
+		}
+			return "참새의 이름은 "+name+"입니다";
+		
+		
+	}
 }

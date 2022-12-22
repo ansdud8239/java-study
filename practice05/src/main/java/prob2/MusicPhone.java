@@ -10,8 +10,8 @@ public class MusicPhone extends Phone {
 	      super.execute( function );
 	}
 
-	  private void playMusic(){
-	    System.out.print("다운로드해서 음악재생");
+	  protected void playMusic(){
+		  System.out.print("MP3 플레이어에서 음악재생");
 	  }
 
 }

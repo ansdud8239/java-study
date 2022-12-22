@@ -1,6 +1,6 @@
 package prob03;
 
-public class DropShip extends Unit{
+public class Marine extends Unit{
 	// 현재 위치
 	private int x;
 	private int y;
