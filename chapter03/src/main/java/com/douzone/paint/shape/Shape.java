@@ -1,4 +1,6 @@
-package paint;
+package com.douzone.paint.shape;
+
+import com.douzone.paint.i.Drawable;
 
 // 추상메서드가 하나라도 있을경우 추상클래스가 됨
 public abstract class Shape implements Drawable {
