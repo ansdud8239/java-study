@@ -1,5 +1,7 @@
 package chapter04;
 
+import java.util.Objects;
+
 import com.douzone.paint.i.Drawable;
 
 public class Point implements Drawable {
@@ -53,7 +55,28 @@ public class Point implements Drawable {
 	public String toString() {
 		return "Point [x=" + x + ", y=" + y + "]";
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		//(x, y)내용을 가지로 hash
+		// 내용이 같으면 해쉬코드가 같을 수 있음(가능성)
+		// 해쉬코드를 비교하고 내용비교
+		return Objects.hash(x, y);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Point other = (Point) obj;
+		return x == other.x && y == other.y;
+	}
 
 }
