@@ -6,6 +6,8 @@ import java.util.Set;
 public class HashSetTest {
 
 	public static void main(String[] args) {
+		//중복 없음
+		//순서 없음
 		Set<String> s = new HashSet<>();
 		
 		String s1 = new String("도우너");
