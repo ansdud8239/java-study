@@ -23,5 +23,7 @@
 		<module>chapter04</module>
 		<module>final</module>
 		<module>finaltest</module>
+		<module>datastructure</module>
+		<module>network</module>
 	</modules>
 </project>

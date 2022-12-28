@@ -10,6 +10,7 @@ import java.io.OutputStream;
 public class FileCopy {
 
 	public static void main(String[] args) {
+		// loopy파일을 읽어서 loopy.copy파일에 쓰기 
 
 		InputStream is = null;
 		OutputStream os = null;

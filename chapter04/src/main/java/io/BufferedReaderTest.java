@@ -8,6 +8,7 @@ import java.io.IOException;
 public class BufferedReaderTest {
 
 	public static void main(String[] args) {
+		// BufferedReaderTest.java파일을 읽어서 console에 나타내기
 		BufferedReader br = null;
 
 		try {

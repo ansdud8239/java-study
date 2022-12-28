@@ -8,6 +8,7 @@ import java.io.IOException;
 public class BufferedOuputStreamTest {
 
 	public static void main(String[] args) {
+		// hello.txt 파일 안에 a-z문자 쓰기
 		BufferedOutputStream bos = null;
 		try {
 			// 기반 스트림
