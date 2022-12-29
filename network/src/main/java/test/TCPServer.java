@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class TCPServer {
 
@@ -22,7 +23,7 @@ public class TCPServer {
 			// "0.0.0.0" 으로 설정
 			// IPAdresss: 0.0.0.0 : 특정 호스트 IP에 바인딩 하지 않는다
 			// InetAddress inetAddress=InetAddress.getLocalHost();
-			serverSocket.bind(new InetSocketAddress("0.0.0.0", 5000));
+			serverSocket.bind(new InetSocketAddress("0.0.0.0", 3000),10);
 
 			// 3.accecpt
 			Socket socket = serverSocket.accept(); // blocking
@@ -43,14 +44,21 @@ public class TCPServer {
 					int readByteCount = is.read(buffer);	// blocking
 					if(readByteCount == -1) {
 						//서버가 연결이 끊어졌을경우
+						// 클라이언트가 정상적으로 종료(close() 호출)
 						System.out.println("[server] closed by client");
 						break;
 					}
 					
 					String data = new String(buffer,0,readByteCount,"utf-8");
 					System.out.println("[server] received: "+data);
+					
+					//6.데이터 쓰기
+					os.write(data.getBytes("utf-8"));
 				}
-			} catch (IOException e) {
+			}catch (SocketException e) {
+			
+				System.out.println("[server] suddenly closed by client");
+			}catch (IOException e) {
 				// Stream 예외
 				System.out.println("[server] error: " + e);
 			} finally {
