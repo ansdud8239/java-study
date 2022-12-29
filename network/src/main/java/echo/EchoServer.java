@@ -17,44 +17,16 @@ public class EchoServer {
 
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;
+		
 		try {
 			serverSocket = new ServerSocket();
 
 			serverSocket.bind(new InetSocketAddress("0.0.0.0", PORT), 10);
 			log("starts...[port:" + PORT + "]");
-			Socket socket = serverSocket.accept(); // blocking
-
-			try {
-				InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
-				String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
-				int remotePort = inetRemoteSocketAddress.getPort();
-				log("connected by client[" + remoteHostAddress + ":" + remotePort + "]");
-
-				PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
-				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
-
-				while (true) {
-					String data = br.readLine();
-					if (data == null) {
-						log("closed by client");
-						break;
-					}
-					log("received: " + data);
-					// print로 하면 버퍼가 찼을때 출력 됨
-					pw.println(data);
-				}
-			} catch (IOException e) {
-				log("error: " + e);
-			} finally {
-
-				try {
-					if (socket != null && !socket.isClosed()) {
-						socket.close();
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			
+			while(true) {
+				Socket socket = serverSocket.accept(); // blocking
+				new EchoRequestHandler(socket).start();
 			}
 
 		} catch (SocketException e) {
@@ -77,7 +49,7 @@ public class EchoServer {
 	}
 
 	private static void log(String msg) {
-		System.out.println("[EchoServer] : " + msg);
+		System.out.println("[EchoServer#] : " + msg);
 
 	}
 }

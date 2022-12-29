@@ -25,5 +25,6 @@
 		<module>finaltest</module>
 		<module>datastructure</module>
 		<module>network</module>
+		<module>javagui</module>
 	</modules>
 </project>
