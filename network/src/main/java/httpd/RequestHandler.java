@@ -54,15 +54,14 @@ public class RequestHandler extends Thread {
 			// 세번째 프로토콜
 			String[] tokens = request.split(" ");
 			if ("GET".equals(tokens[0])) {
-				consoleLog(request);
 				responseStaticResource(outputStream, tokens[1], tokens[2]);
 			} else {
 				// methods: POST,PUT,DELETE,HEAD,CONNECT
 				// SimpleHttpServer에서는 무시(400 Bad Request)
 				// 과제
-				// response400Error(outputStrean,tokens[2]);
+				response400Error(outputStream,tokens[2]);
 			}
-
+			consoleLog(request);
 			// 예제 응답입니다.
 			// 서버 시작과 테스트를 마친 후, 주석 처리 합니다.
 			// outputStream.write("HTTP/1.1 200 OK\r\n".getBytes("UTF-8"));
@@ -94,17 +93,57 @@ public class RequestHandler extends Thread {
 			url = "/index.html";
 		}
 		File file = new File(DOCUMENT_ROOT+url);
-		
+		if(!(file.exists())) {
+			response404Error(outputStream,protocol);
+			return;
+		}
 		//nio
 		//바이트로 전체를 읽음
 		byte[] body=Files.readAllBytes(file.toPath());
 		String contentType = Files.probeContentType(file.toPath());
 		
-		 outputStream.write("HTTP/1.1 200 OK\r\n".getBytes("UTF-8"));
+		 outputStream.write((protocol+" 200 OK\r\n").getBytes("UTF-8"));
 		 outputStream.write(("Content-Type:"+contentType+";charset=utf-8\r\n").getBytes("UTF-8"));
 		 outputStream.write("\r\n".getBytes());
 		 outputStream.write(body);
 	
+	}
+	private void response400Error(OutputStream outputStream, String protocol) throws IOException {
+		//HTTP/1.1 400 Bad Request
+		//Content-Type:..
+		//\r\n
+		//....
+		String url = "/error/400.html";
+		File file = new File(DOCUMENT_ROOT+url);
+
+		byte[] body=Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+		
+		 outputStream.write((protocol+" 400 Bad Request\r\n").getBytes("UTF-8"));
+		 outputStream.write(("Content-Type:"+contentType+";charset=utf-8\r\n").getBytes("UTF-8"));
+		 outputStream.write("\r\n".getBytes());
+		 outputStream.write(body);
+	
+		
+	}
+
+	private void response404Error(OutputStream outputStream, String protocol) throws IOException {
+		//HTTP/1.1 404 NOT Found
+		//Content-Type:..
+		//\r\n
+		//....
+		String url = "/error/404.html";
+		File file = new File(DOCUMENT_ROOT+url);
+		
+		byte[] body=Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+		
+		 outputStream.write((protocol+" 404 NOT Found\r\n").getBytes("UTF-8"));
+		 outputStream.write(("Content-Type:"+contentType+";charset=utf-8\r\n").getBytes("UTF-8"));
+		 outputStream.write("\r\n".getBytes());
+		 outputStream.write(body);
+	
+		
 	}
 
 	public void consoleLog(String message) {
