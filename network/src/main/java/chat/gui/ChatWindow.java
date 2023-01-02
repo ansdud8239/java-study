@@ -13,6 +13,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import chat.ChatClientThread;
 
 public class ChatWindow {
 
@@ -21,13 +29,17 @@ public class ChatWindow {
 	private Button buttonSend;
 	private TextField textField;
 	private TextArea textArea;
+	private String name;
+	private Socket socket;
 
-	public ChatWindow(String name) {
+	public ChatWindow(String name,Socket socket) {
 		frame = new Frame(name);
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+		this.name = name;
+		this.socket = socket;
 	}
 
 	public void show() {
@@ -75,8 +87,20 @@ public class ChatWindow {
 		frame.setVisible(true);
 		frame.pack();
 		
-		//IOStream받아오기
-		//ChatClientThread 생성
+		
+		try {
+			//IOStream받아오기
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+		
+			//ChatClientThread 생성
+			new ChatClientThread().start();
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		
+		
+		
 	}
 
 	private void finish() {
@@ -94,7 +118,7 @@ public class ChatWindow {
 		textField.requestFocus();
 		
 		//ChatClientThread 에서 서버로 부터 받은 메세지가 있다
-		updateTextArea("마이콜: "+message);
+		updateTextArea(name+": "+message);
 		
 
 	}
@@ -104,6 +128,8 @@ public class ChatWindow {
 		
 	}
 	private class ChatClientThread extends Thread {
+		
+
 
 		@Override
 		public void run() {
