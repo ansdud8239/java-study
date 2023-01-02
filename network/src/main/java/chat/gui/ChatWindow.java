@@ -16,11 +16,14 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
-import chat.ChatClientThread;
+import chat.ChatClient;
+
 
 public class ChatWindow {
 
@@ -40,6 +43,7 @@ public class ChatWindow {
 		textArea = new TextArea(30, 80);
 		this.name = name;
 		this.socket = socket;
+		new ChatClientThread().start();
 	}
 
 	public void show() {
@@ -88,18 +92,6 @@ public class ChatWindow {
 		frame.pack();
 		
 		
-		try {
-			//IOStream받아오기
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
-		
-			//ChatClientThread 생성
-			new ChatClientThread().start();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
-		
 		
 	}
 
@@ -114,6 +106,19 @@ public class ChatWindow {
 		String message = textField.getText();
 		System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
 
+		try {
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);			
+			pw.println("MESSAGE:"+message);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
 		textField.setText("");
 		textField.requestFocus();
 		
@@ -134,7 +139,20 @@ public class ChatWindow {
 		@Override
 		public void run() {
 			//String message = br.readLine();
-			updateTextArea("안녕");
+			
+			
+			try {
+				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+				while (true) {
+					String data = br.readLine();
+					System.out.println(data);
+				}
+			} catch (SocketException e) {
+				System.out.println("채팅을 종료하겠습니다.");
+			} catch (IOException e) {
+				ChatClient.log("error : " + e);
+			}
+
 		}
 
 	}

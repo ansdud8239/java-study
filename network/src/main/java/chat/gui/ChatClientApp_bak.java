@@ -31,7 +31,7 @@ public class ChatClientApp_bak {
 //			new ChatWindow(name).show();
 //			return;
 //		}
-		new ChatWindow(name).show();
+	//	new ChatWindow(name).show();
 		scanner.close();
 
 	}

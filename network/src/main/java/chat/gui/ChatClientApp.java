@@ -43,7 +43,7 @@ public class ChatClientApp {
 			String data = br.readLine();
 			if("JOIN:OK".equals(data)) {
 				//System.out.println("환영합니다");
-				new ChatWindow(name,socket).show();
+				//new ChatWindow(name,socket).show();
 			}
 			
 		} catch (SocketException e) {
