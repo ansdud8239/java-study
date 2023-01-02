@@ -39,7 +39,9 @@ public class ChatWindow {
 				sendMessage();
 			}
 		});
-
+		//buttonSend.addActionListener((ActionEvent e) -> {});
+			
+		
 		// Textfield
 		textField.setColumns(80);
 
@@ -64,5 +66,12 @@ public class ChatWindow {
 	}
 	
 	private void sendMessage() {
+		String message = textField.getText();
+		System.out.println("메세지 보내는 프로토콜 구현 ! "+message);
+		
+		textField.setText("");
+		textField.requestFocus();
+		
+	
 	}
 }

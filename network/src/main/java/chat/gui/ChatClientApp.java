@@ -19,10 +19,19 @@ public class ChatClientApp {
 			
 			System.out.println("대화명은 한글자 이상 입력해야 합니다.\n");
 		}
-		
+		// 1. create soctet
+		// 2. conntect to server
+		// 3. get iostream
+		// 4. join protocol 진행
+		// 		String line = "JOIN:OK"
+		String line = "JOIN;OK";
+//		if("JOIN:OK".equals(line)) {
+//			new ChatWindow(name).show();
+//			return;
+//		}
+		new ChatWindow(name).show();
 		scanner.close();
 
-		new ChatWindow(name).show();
 	}
 
 }
