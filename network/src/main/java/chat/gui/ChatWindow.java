@@ -3,10 +3,14 @@ package chat.gui;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -18,12 +22,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketException;
 
-import chat.ChatClient;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeListener;
 
+import chat.ChatClient;
 
 public class ChatWindow {
 
@@ -34,8 +39,9 @@ public class ChatWindow {
 	private TextArea textArea;
 	private String name;
 	private Socket socket;
+	private PrintWriter pw;
 
-	public ChatWindow(String name,Socket socket) {
+	public ChatWindow(String name, Socket socket) {
 		frame = new Frame(name);
 		pannel = new Panel();
 		buttonSend = new Button("Send");
@@ -43,10 +49,20 @@ public class ChatWindow {
 		textArea = new TextArea(30, 80);
 		this.name = name;
 		this.socket = socket;
-		new ChatClientThread().start();
 	}
 
 	public void show() {
+
+		// 사용자 입장
+		textArea.append(name+"님 환영합니다.\n\n");
+
+
+		// 가운데 정렬
+		frame.setSize(600, 400);
+		Dimension frameSize = frame.getSize();
+		Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation((windowSize.width - frameSize.width) / 2, (windowSize.height - frameSize.height) / 2);
+
 		// Button
 		buttonSend.setBackground(Color.GRAY);
 		buttonSend.setForeground(Color.WHITE);
@@ -59,6 +75,7 @@ public class ChatWindow {
 		// buttonSend.addActionListener((ActionEvent e) -> {});
 
 		// Textfield
+		textField.requestFocus();
 		textField.setColumns(80);
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -84,20 +101,24 @@ public class ChatWindow {
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				// clean-up
-				System.exit(0);
+				finish();
 			}
 		});
 		frame.setVisible(true);
 		frame.pack();
-		
-		
-		
+
+		try {
+			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+		} catch (IOException e) {
+			ChatClient.log("error : " + e);
+		}
+
+		new ChatClientThread(socket).start();
 	}
 
 	private void finish() {
 		// quit protocol 구현
-
+		pw.println("QUIT");
 		// exit java
 		System.exit(0);
 	}
@@ -106,49 +127,45 @@ public class ChatWindow {
 		String message = textField.getText();
 		System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
 
-		try {
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);			
-			pw.println("MESSAGE:"+message);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if ("".equals(message)) {
+			return;
 		}
+		if ("QUIT".equals(message)) {
+			finish();
+		}
+		pw.println("MESSAGE:" + message);
 
-		
-		
 		textField.setText("");
 		textField.requestFocus();
-		
-		//ChatClientThread 에서 서버로 부터 받은 메세지가 있다
-		updateTextArea(name+": "+message);
-		
-
 	}
+
 	private void updateTextArea(String message) {
 		textArea.append(message);
 		textArea.append("\n");
-		
-	}
-	private class ChatClientThread extends Thread {
-		
 
+	}
+
+	private class ChatClientThread extends Thread {
+		private Socket socket;
+		private BufferedReader br;
+
+		public ChatClientThread(Socket socket) {
+			this.socket = socket;
+		}
 
 		@Override
 		public void run() {
-			//String message = br.readLine();
-			
-			
 			try {
-				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+				this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 				while (true) {
 					String data = br.readLine();
-					System.out.println(data);
+					updateTextArea(data);
+					// System.out.println(data);
 				}
 			} catch (SocketException e) {
 				System.out.println("채팅을 종료하겠습니다.");
+				System.out.println(e);
+				finish();
 			} catch (IOException e) {
 				ChatClient.log("error : " + e);
 			}
@@ -156,4 +173,5 @@ public class ChatWindow {
 		}
 
 	}
+
 }

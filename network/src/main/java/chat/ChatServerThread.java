@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +30,13 @@ public class ChatServerThread extends Thread {
 
 			while (true) {
 				String request = br.readLine();
-				System.out.println("request***"+request);
 
 				if (request == null) {
 					ChatServer.log("클라이언트로 부터 연결 끊김");
-					if(!socket.isClosed()) {
+					if (!socket.isClosed()) {
 						doQuit(pw);
 					}
-					
+
 					break;
 				} else {
 					String[] tokens = request.split(":");
@@ -54,6 +54,8 @@ public class ChatServerThread extends Thread {
 
 			}
 
+		} catch (SocketException e) {
+			ChatServer.log("suddenly closed by client");
 		} catch (IOException e) {
 			ChatServer.log("error : " + e);
 		}
@@ -67,7 +69,6 @@ public class ChatServerThread extends Thread {
 		broadcast(data);
 
 		addWriter(pw);
-		
 		pw.println("JOIN:OK");
 
 	}
@@ -89,7 +90,7 @@ public class ChatServerThread extends Thread {
 	}
 
 	private void doMessage(String msg) {
-		broadcast("[" + nickname + "] : " + msg);
+		broadcast(nickname + " : " + msg);
 
 	}
 
@@ -97,6 +98,7 @@ public class ChatServerThread extends Thread {
 		removeWriter(writer);
 		String data = "[" + nickname + "]님이 퇴장하였습니다.";
 		broadcast(data);
+
 	}
 
 	private void removeWriter(Writer writer) {
