@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class ChatServerThread extends Thread {
@@ -33,17 +35,20 @@ public class ChatServerThread extends Thread {
 
 				if (request == null) {
 					ChatServer.log("클라이언트로 부터 연결 끊김");
-					if (!socket.isClosed()) {
-						doQuit(pw);
-					}
-
+					doQuit(pw);
 					break;
 				} else {
-					String[] tokens = request.split(":");
+					String[] tokens = request.split(" ");
+					String data = "";
+					if (tokens.length >= 2) {
+						byte[] decodedBytes = Base64.getDecoder().decode(tokens[1]);
+						data = new String(decodedBytes, StandardCharsets.UTF_8);
+					}
+
 					if ("JOIN".equals(tokens[0])) {
-						doJoin(tokens[1], pw);
+						doJoin(data, pw);
 					} else if ("MESSAGE".equals(tokens[0])) {
-						doMessage(tokens[1]);
+						doMessage(data);
 					} else if ("QUIT".equals(tokens[0])) {
 						doQuit(pw);
 					} else {
@@ -55,9 +60,19 @@ public class ChatServerThread extends Thread {
 			}
 
 		} catch (SocketException e) {
-			ChatServer.log("suddenly closed by client");
+			System.out.println("채팅을 종료하였습니다.");
 		} catch (IOException e) {
 			ChatServer.log("error : " + e);
+		} finally {
+
+			try {
+				if (socket != null && !socket.isClosed()) {
+					socket.close();
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -65,7 +80,7 @@ public class ChatServerThread extends Thread {
 	private void doJoin(String nickname, PrintWriter pw) {
 		this.nickname = nickname;
 
-		String data = "[" + nickname + "]님이 참여하였습니다";
+		String data = "========[" + nickname + "]님이 입장하였습니다========";
 		broadcast(data);
 
 		addWriter(pw);
@@ -90,13 +105,13 @@ public class ChatServerThread extends Thread {
 	}
 
 	private void doMessage(String msg) {
-		broadcast(nickname + " : " + msg);
+		broadcast("[" + nickname + "]▶ " + msg);
 
 	}
 
 	private void doQuit(Writer writer) {
 		removeWriter(writer);
-		String data = "[" + nickname + "]님이 퇴장하였습니다.";
+		String data = "========[" + nickname + "]님이 퇴장하였습니다========";
 		broadcast(data);
 
 	}

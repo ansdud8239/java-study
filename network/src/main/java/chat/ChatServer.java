@@ -31,9 +31,7 @@ public class ChatServer {
 				new ChatServerThread(socket, listWriters).start();
 			}
 
-		} catch (SocketException e) {
-			log("suddenly closed by client");
-		} catch (IOException e) {
+		}catch (IOException e) {
 			log("error: " + e);
 		} finally {
 

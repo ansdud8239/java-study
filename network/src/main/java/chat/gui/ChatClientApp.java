@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Base64;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -41,10 +42,11 @@ public class ChatClientApp {
 				} else {
 					if (name.isEmpty() == false) {
 						// 4. join protocol 진행
-						pw.println("JOIN:" + name);
+						//String encodedString = Base64.getEncoder().encodeToString(name.getBytes());
+						pw.println("JOIN " + Base64.getEncoder().encodeToString(name.getBytes()));
 						String data = br.readLine();
 						if ("JOIN:OK".equals(data)) {
-							System.out.println(name+"님 환영합니다");
+							System.out.println(name + "님 환영합니다");
 						}
 						break;
 					}
@@ -53,8 +55,6 @@ public class ChatClientApp {
 
 			}
 			new ChatWindow(name, socket).show();
-		} catch (SocketException e) {
-			log("suddenly closed by client");
 		} catch (IOException e) {
 			log("error : " + e);
 		}

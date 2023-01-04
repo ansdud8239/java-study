@@ -24,6 +24,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeListener;
@@ -53,6 +55,7 @@ public class ChatWindow {
 
 	public void show() {
 
+		
 		// 사용자 입장
 		textArea.append(name+"님 환영합니다.\n\n");
 
@@ -86,15 +89,18 @@ public class ChatWindow {
 				}
 			}
 
+			
 		});
 
 		// Pannel
 		pannel.setBackground(Color.LIGHT_GRAY);
+		//pannel.setBackground(new Color(250,244,192));
 		pannel.add(textField);
 		pannel.add(buttonSend);
 		frame.add(BorderLayout.SOUTH, pannel);
 
 		// TextArea
+		textArea.setBackground(new Color(250,244,192));
 		textArea.setEditable(false);
 		frame.add(BorderLayout.CENTER, textArea);
 
@@ -125,7 +131,7 @@ public class ChatWindow {
 
 	private void sendMessage() {
 		String message = textField.getText();
-		System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
+		//System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
 
 		if ("".equals(message)) {
 			return;
@@ -133,7 +139,7 @@ public class ChatWindow {
 		if ("QUIT".equals(message)) {
 			finish();
 		}
-		pw.println("MESSAGE:" + message);
+		pw.println("MESSAGE " +  Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8)));
 
 		textField.setText("");
 		textField.requestFocus();
@@ -164,7 +170,6 @@ public class ChatWindow {
 				}
 			} catch (SocketException e) {
 				System.out.println("채팅을 종료하겠습니다.");
-				System.out.println(e);
 				finish();
 			} catch (IOException e) {
 				ChatClient.log("error : " + e);
