@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Scanner;
 
@@ -42,8 +43,8 @@ public class ChatClientApp {
 				} else {
 					if (name.isEmpty() == false) {
 						// 4. join protocol 진행
-						//String encodedString = Base64.getEncoder().encodeToString(name.getBytes());
-						pw.println("JOIN " + Base64.getEncoder().encodeToString(name.getBytes()));
+
+						pw.println("JOIN " + Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8)));
 						String data = br.readLine();
 						if ("JOIN:OK".equals(data)) {
 							System.out.println(name + "님 환영합니다");

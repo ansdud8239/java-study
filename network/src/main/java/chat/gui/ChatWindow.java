@@ -44,7 +44,7 @@ public class ChatWindow {
 	private PrintWriter pw;
 
 	public ChatWindow(String name, Socket socket) {
-		frame = new Frame(name);
+		frame = new Frame(name+"님 채팅방입니다.");
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
@@ -102,8 +102,8 @@ public class ChatWindow {
 		// TextArea
 		textArea.setBackground(new Color(250,244,192));
 		textArea.setEditable(false);
-		frame.add(BorderLayout.CENTER, textArea);
-
+		frame.add(BorderLayout.CENTER, textArea);		
+		
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {

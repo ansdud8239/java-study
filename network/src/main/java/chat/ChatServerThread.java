@@ -11,6 +11,7 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 
 public class ChatServerThread extends Thread {
@@ -80,7 +81,7 @@ public class ChatServerThread extends Thread {
 	private void doJoin(String nickname, PrintWriter pw) {
 		this.nickname = nickname;
 
-		String data = "========[" + nickname + "]님이 입장하였습니다========";
+		String data = "========[" + nickname + "]님이 입장하였습니다========";		
 		broadcast(data);
 
 		addWriter(pw);
