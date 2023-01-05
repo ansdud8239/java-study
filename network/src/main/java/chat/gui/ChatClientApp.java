@@ -25,35 +25,36 @@ public class ChatClientApp {
 		Socket socket = null;
 
 		try {
-			// 1. conntect to server
+			// 소켓 생성
 			socket = new Socket();
+			// 소켓 연결
 			socket.connect(new InetSocketAddress(SERVER_IP, ChatServer.PORT));
 			// log("connected");
 
-			// 2. get iostream
+			// get iostream
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+			
 			while (true) {
-
-				// 3. 대화명 입력
-				name = JOptionPane.showInputDialog("닉네임을 입력하세요");
+				// 대화명 입력
+				name = JOptionPane.showInputDialog("닉네임을 한글자 이상 입력하세요");
 				// name = scanner.nextLine();
+				// 취소버튼을 클릭 시 or 대화명을 입력하지 않은 경우
 				if (name == null || name.equals("")) {
+					System.out.println("대화명은 한글자 이상 입력해야 합니다.\n");
 					System.exit(0);
 				} else {
+					//확인 버튼을 클릭 시
 					if (name.isEmpty() == false) {
-						// 4. join protocol 진행
-
 						pw.println("JOIN " + Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8)));
 						String data = br.readLine();
 						if ("JOIN:OK".equals(data)) {
 							System.out.println(name + "님 환영합니다");
+							break;
 						}
-						break;
+						
 					}
-				}
-				System.out.println("대화명은 한글자 이상 입력해야 합니다.\n");
-
+				}			
 			}
 			new ChatWindow(name, socket).show();
 		} catch (IOException e) {

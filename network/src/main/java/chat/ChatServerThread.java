@@ -28,6 +28,7 @@ public class ChatServerThread extends Thread {
 	@Override
 	public void run() {
 		try {
+			// get iostream
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 
@@ -39,9 +40,16 @@ public class ChatServerThread extends Thread {
 					doQuit(pw);
 					break;
 				} else {
+					// 프로토콜 데이터 -> " "을 기준으로 짜름
 					String[] tokens = request.split(" ");
+					// 메시지를 저장할 변수
 					String data = "";
+					// QUIT은 tokens.length가 1임
+					// 그 외 JOIN,MESSAGE는 2 이상 임. 
 					if (tokens.length >= 2) {
+						// if문이 없을 경우 index에러 발생
+						// request는 프로토콜 {base64인코딩 한 값 = data} 으로 받음
+						// data를 base64로 디코딩 함.
 						byte[] decodedBytes = Base64.getDecoder().decode(tokens[1]);
 						data = new String(decodedBytes, StandardCharsets.UTF_8);
 					}
@@ -78,17 +86,19 @@ public class ChatServerThread extends Thread {
 
 	}
 
+	// join
 	private void doJoin(String nickname, PrintWriter pw) {
 		this.nickname = nickname;
 
 		String data = "========[" + nickname + "]님이 입장하였습니다========";		
+		System.out.println(data);
 		broadcast(data);
-
 		addWriter(pw);
 		pw.println("JOIN:OK");
 
 	}
-
+	
+	//입장 시 add
 	private void addWriter(Writer writer) {
 		synchronized (listWriters) {
 			listWriters.add(writer);
@@ -105,18 +115,22 @@ public class ChatServerThread extends Thread {
 		}
 	}
 
+	//message
 	private void doMessage(String msg) {
 		broadcast("[" + nickname + "]▶ " + msg);
 
 	}
 
+	//quit
 	private void doQuit(Writer writer) {
 		removeWriter(writer);
 		String data = "========[" + nickname + "]님이 퇴장하였습니다========";
+		System.out.println(data);
 		broadcast(data);
 
 	}
 
+	//퇴장시 remove
 	private void removeWriter(Writer writer) {
 		synchronized (writer) {
 			listWriters.remove(writer);
