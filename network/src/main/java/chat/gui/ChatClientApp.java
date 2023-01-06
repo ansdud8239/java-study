@@ -42,7 +42,7 @@ public class ChatClientApp {
 				// 취소버튼을 클릭 시 or 대화명을 입력하지 않은 경우
 				if (name == null || name.equals("")) {
 					System.out.println("대화명은 한글자 이상 입력해야 합니다.\n");
-					System.exit(0);
+					//System.exit(0);
 				} else {
 					//확인 버튼을 클릭 시
 					if (name.isEmpty() == false) {

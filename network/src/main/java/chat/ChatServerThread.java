@@ -9,9 +9,9 @@ import java.io.Writer;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 public class ChatServerThread extends Thread {
@@ -57,7 +57,7 @@ public class ChatServerThread extends Thread {
 					if ("JOIN".equals(tokens[0])) {
 						doJoin(data, pw);
 					} else if ("MESSAGE".equals(tokens[0])) {
-						doMessage(data);
+						doMessage(data, pw);
 					} else if ("QUIT".equals(tokens[0])) {
 						doQuit(pw);
 					} else {
@@ -90,8 +90,8 @@ public class ChatServerThread extends Thread {
 	private void doJoin(String nickname, PrintWriter pw) {
 		this.nickname = nickname;
 
-		String data = "========[" + nickname + "]님이 입장하였습니다========";		
-		System.out.println(data);
+		String data = "========[" + nickname + "]님이 입장하였습니다========"+date("[HH:mm:ss]");		
+		System.out.println(nickname+"님 입장");
 		broadcast(data);
 		addWriter(pw);
 		pw.println("JOIN:OK");
@@ -116,16 +116,16 @@ public class ChatServerThread extends Thread {
 	}
 
 	//message
-	private void doMessage(String msg) {
-		broadcast("[" + nickname + "]▶ " + msg);
+	private void doMessage(String msg,PrintWriter pw) {
+		broadcast("[" + nickname + "]▶ " + msg+date("[HH:mm:ss]"));
 
 	}
 
 	//quit
 	private void doQuit(Writer writer) {
 		removeWriter(writer);
-		String data = "========[" + nickname + "]님이 퇴장하였습니다========";
-		System.out.println(data);
+		String data = "========[" + nickname + "]님이 퇴장하였습니다========"+date("[HH:mm:ss]");
+		System.out.println(nickname+"님 퇴장");
 		broadcast(data);
 
 	}
@@ -136,6 +136,14 @@ public class ChatServerThread extends Thread {
 			listWriters.remove(writer);
 		}
 
+	}
+	
+	public String date(String format) {
+		Date today = new Date();
+		SimpleDateFormat df = new SimpleDateFormat(format);
+		String date = df.format(today);
+		
+		return "\t\t"+date;
 	}
 
 }

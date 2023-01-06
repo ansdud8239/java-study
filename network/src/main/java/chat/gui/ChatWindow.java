@@ -44,7 +44,7 @@ public class ChatWindow {
 	private PrintWriter pw;
 
 	public ChatWindow(String name, Socket socket) {
-		frame = new Frame(name+"님 채팅방입니다.");
+		frame = new Frame(name + "님 채팅방입니다.");
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
@@ -55,27 +55,14 @@ public class ChatWindow {
 
 	public void show() {
 
-		
 		// 사용자 입장
-		textArea.append(name+"님 환영합니다.\n\n");
-
+		textArea.append(name + "님 환영합니다.\n\n");
 
 		// 가운데 정렬
 		frame.setSize(600, 400);
 		Dimension frameSize = frame.getSize();
 		Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setLocation((windowSize.width - frameSize.width) / 2, (windowSize.height - frameSize.height) / 2);
-
-		// Button
-		buttonSend.setBackground(Color.GRAY);
-		buttonSend.setForeground(Color.WHITE);
-		buttonSend.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				sendMessage();
-			}
-		});
-		// buttonSend.addActionListener((ActionEvent e) -> {});
 
 		// Textfield
 		textField.requestFocus();
@@ -89,21 +76,38 @@ public class ChatWindow {
 				}
 			}
 
-			
 		});
+		Panel pannel2 = new Panel();
+		pannel2.setBackground(Color.red);
+		// pannel.setBackground(new Color(250,244,192));
+		pannel2.add(textField);
+		pannel2.add(buttonSend);
+		frame.add(BorderLayout.SOUTH, pannel2);
+		
+
+		// Button
+		buttonSend.setBackground(Color.GRAY);
+		buttonSend.setForeground(Color.WHITE);
+		buttonSend.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				sendMessage();
+			}
+		});
+		// buttonSend.addActionListener((ActionEvent e) -> {});
 
 		// Pannel
-		pannel.setBackground(Color.LIGHT_GRAY);
-		//pannel.setBackground(new Color(250,244,192));
+		pannel.setBackground(Color.GRAY);
+		// pannel.setBackground(new Color(250,244,192));
 		pannel.add(textField);
 		pannel.add(buttonSend);
 		frame.add(BorderLayout.SOUTH, pannel);
 
 		// TextArea
-		textArea.setBackground(new Color(250,244,192));
+		textArea.setBackground(new Color(250, 244, 192));
 		textArea.setEditable(false);
-		frame.add(BorderLayout.CENTER, textArea);		
-		
+		frame.add(BorderLayout.CENTER, textArea);
+
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -131,7 +135,7 @@ public class ChatWindow {
 
 	private void sendMessage() {
 		String message = textField.getText();
-		//System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
+		// System.out.println("메세지 보내는 프로토콜 구현 ! " + message);
 
 		if ("".equals(message)) {
 			return;
@@ -139,7 +143,7 @@ public class ChatWindow {
 		if ("QUIT".equals(message)) {
 			finish();
 		}
-		pw.println("MESSAGE " +  Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8)));
+		pw.println("MESSAGE " + Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8)));
 
 		textField.setText("");
 		textField.requestFocus();
