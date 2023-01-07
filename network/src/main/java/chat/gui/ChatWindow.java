@@ -30,7 +30,6 @@ import java.util.Base64;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeListener;
 
-import chat.ChatClient;
 
 public class ChatWindow {
 
@@ -120,7 +119,7 @@ public class ChatWindow {
 		try {
 			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
 		} catch (IOException e) {
-			ChatClient.log("error : " + e);
+			ChatClientApp.log("error : " + e);
 		}
 
 		new ChatClientThread(socket).start();
@@ -176,7 +175,7 @@ public class ChatWindow {
 				System.out.println("채팅을 종료하겠습니다.");
 				finish();
 			} catch (IOException e) {
-				ChatClient.log("error : " + e);
+				ChatClientApp.log("error : " + e);
 			}
 
 		}
